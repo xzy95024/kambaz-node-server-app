@@ -2,13 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import Hello from './Hello.js';
 import Lab5 from './Lab5/index.js';
-import UserRoutes from '../kamabaz-react-web-app/src/Kambaz/Users/routes.js';
+import UserRoutes from './Kambaz/Users/routes.js';
 import session from "express-session";
 import "dotenv/config";
-import CourseRoutes from "../kamabaz-react-web-app/src/Kambaz/Courses/routes.js";
-import EnrollmentRoutes from "../kamabaz-react-web-app/src/Kambaz/Enrollments/routes.js";
-import ModuleRoutes from "../kamabaz-react-web-app/src/Kambaz/Courses/Modules/routes.js";
-import AssignmentRoutes from "../kamabaz-react-web-app/src/Kambaz/Courses/Assignments/routes.js";
+import CourseRoutes from "./Kambaz/Courses/routes.js";
+import EnrollmentRoutes from "./Kambaz/Enrollments/routes.js";
+import ModuleRoutes from "./Kambaz/Modules/routes.js";
+import AssignmentRoutes from "./Kambaz/Assignments/routes.js";
+import PeopleRoutes from "./Kambaz/People/routes.js"
 
 const app = express();
 
@@ -47,6 +48,7 @@ CourseRoutes(app);
 EnrollmentRoutes(app);
 ModuleRoutes(app);
 AssignmentRoutes(app);
+PeopleRoutes(app);
 Lab5(app);
 Hello(app);
 
