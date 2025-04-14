@@ -11,7 +11,8 @@ import ModuleRoutes from "./Kambaz/Modules/routes.js";
 import AssignmentRoutes from "./Kambaz/Assignments/routes.js";
 import PeopleRoutes from "./Kambaz/People/routes.js"
 import mongoose from 'mongoose';
-
+import  EnrollmentModel from "./Kambaz/Enrollments/model.js"
+import  CourseModel from "./Kambaz/Courses/model.js"
 const CONNECTION_STRING = process.env.MONGO_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kambaz"
 mongoose.connect(CONNECTION_STRING);
 const app = express();
@@ -56,5 +57,12 @@ AssignmentRoutes(app);
 PeopleRoutes(app);
 Lab5(app);
 Hello(app);
+
+app.get("/debug", async (req, res) => {
+    const currentUser = req.session["currentUser"];
+    const enrollments = await EnrollmentModel.find();
+    const courses = await CourseModel.find();
+    res.json({ currentUser, enrollments, courses });
+});
 
 app.listen(process.env.PORT || 4000);

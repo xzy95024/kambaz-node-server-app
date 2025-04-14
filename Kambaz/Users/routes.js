@@ -2,6 +2,7 @@ import * as dao from "./dao.js";
 import * as courseDao from "../Courses/dao.js";
 import * as enrollmentsDao from "../Enrollments/dao.js";
 
+
 export default function UserRoutes(app) {
     const findAllUsers = async (req, res) => {
         const { role, name } = req.query;
@@ -96,22 +97,32 @@ export default function UserRoutes(app) {
         res.json(currentUser);
 
     };
-    const findCoursesForEnrolledUser = async (req, res) => {
-        let { userId } = req.params;
+    const findCoursesForUser = async (req, res) => {
+        const currentUser = req.session["currentUser"];
+        console.log("🔍 currentUser from session:", currentUser);
+        if (!currentUser) {
+            res.sendStatus(401);
+            return;
+        }
+        if (currentUser.role === "ADMIN") {
+            const courses = await courseDao.findAllCourses();
+            res.json(courses);
+            return;
+        }
+
+        let userId = req.params.userId || "current";
         if (userId === "current") {
-            const currentUser = req.session["currentUser"];
-            console.log(currentUser)
-            if (!currentUser) {
-                res.sendStatus(401);
-                return;
-            }
             userId = currentUser._id;
         }
-        const courses = await courseDao.findCoursesForEnrolledUser(userId);
+
+        console.log("👉 userId used to query enrollments:", userId);
+        const courses = await enrollmentsDao.findCoursesForUser(userId);
         res.json(courses);
     };
+
     app.get("/api/users", findAllUsers);
-    app.get("/api/users/:userId/courses", findCoursesForEnrolledUser);
+    app.get("/api/users/:userId/courses", findCoursesForUser);
+    app.get("/api/users/current/courses", findCoursesForUser);
     app.post("/api/users/current/courses", createCourse);
     app.post("/api/users", createUser);
     app.get("/api/users/:userId", findUserById);
